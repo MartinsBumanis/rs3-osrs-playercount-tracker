@@ -3,6 +3,8 @@
 Tracks how many people are playing RuneScape 3 and Old School RuneScape, stores
 the history locally, and shows it on a dashboard.
 
+**Live at [rs.arcade.lv](https://rs.arcade.lv).**
+
 ```bash
 npm start
 ```
