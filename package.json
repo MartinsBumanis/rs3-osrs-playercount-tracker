@@ -1,0 +1,13 @@
+{
+  "name": "rs-tracker",
+  "version": "1.0.0",
+  "description": "Tracks RuneScape (RS3 + Old School) online player counts over time",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

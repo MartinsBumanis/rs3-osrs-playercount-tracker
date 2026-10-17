@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>RuneScape and OSRS Player Count</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><rect width='16' height='16' rx='3' fill='%23221a12'/><rect x='2.5' y='9' width='3' height='5' rx='1' fill='%23c98500'/><rect x='6.5' y='5' width='3' height='9' rx='1' fill='%23c98500'/><rect x='10.5' y='2' width='3' height='12' rx='1' fill='%233f8ae6'/></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Sofia+Sans:wght@400;600;700&display=swap">
+  <link rel="stylesheet" href="styles.css">
+  <script>
+    try { if (localStorage.getItem('rs-tracker:theme') === 'light') document.documentElement.dataset.theme = 'light'; } catch {}
+  </script>
+</head>
+<body>
+  <main class="viz-root">
+    <header class="top">
+      <div>
+        <h1>RuneScape and OSRS player count</h1>
+        <p class="status" id="status" aria-live="polite">Connecting…</p>
+      </div>
+      <div class="ranges" role="radiogroup" aria-label="Time range" id="ranges">
+        <button role="radio" data-range="3600000">1h</button>
+        <button role="radio" data-range="21600000">6h</button>
+        <button role="radio" data-range="86400000">24h</button>
+        <button role="radio" data-range="604800000">7d</button>
+        <button role="radio" data-range="2592000000">30d</button>
+        <button role="radio" data-range="0">All</button>
+      </div>
+      <button class="theme-toggle" id="theme-toggle" aria-label="Switch to light theme" title="Switch to light theme"></button>
+    </header>
+
+    <section class="figures">
+      <div class="hero card">
+        <div class="label">Total online</div>
+        <div class="hero-value" id="total-value">–</div>
+        <div class="sub" id="total-sub">RS3 + Old School combined</div>
+      </div>
+      <div class="tile card">
+        <div class="label"><span class="key" style="--c: var(--series-1)"></span>Old School</div>
+        <div class="value" id="osrs-value">–</div>
+        <div class="sub" id="osrs-sub"></div>
+        <div class="sub" id="osrs-steam"></div>
+      </div>
+      <div class="tile card">
+        <div class="label"><span class="key" style="--c: var(--series-2)"></span>RuneScape 3</div>
+        <div class="value" id="rs3-value">–</div>
+        <div class="sub" id="rs3-sub"></div>
+        <div class="sub" id="rs3-steam"></div>
+      </div>
+    </section>
+
+    <section class="card chart-card">
+      <div class="card-head">
+        <div>
+          <h2>Players online</h2>
+          <p class="muted" id="chart-sub"></p>
+        </div>
+        <ul class="legend">
+          <li><span class="line-key" style="--c: var(--series-1)"></span>Old School</li>
+          <li><span class="line-key" style="--c: var(--series-2)"></span>RuneScape 3</li>
+        </ul>
+      </div>
+      <div class="chart" id="chart">
+        <div class="tooltip" id="tooltip" hidden></div>
+      </div>
+      <details class="table-view">
+        <summary>Show data as table</summary>
+        <div class="table-scroll"><table id="history-table"><thead><tr><th>Time</th><th class="num">Old School</th><th class="num">RuneScape 3</th><th class="num">Total</th><th class="num">OSRS Steam</th><th class="num">RS3 Steam</th></tr></thead><tbody></tbody></table></div>
+      </details>
+    </section>
+
+    <section class="card chart-card">
+      <div class="card-head">
+        <div>
+          <h2>Players on Steam</h2>
+          <p class="muted">Only players who launched the game through Steam — a slice of each game's total</p>
+        </div>
+        <ul class="legend">
+          <li><span class="line-key" style="--c: var(--series-1)"></span>Old School</li>
+          <li><span class="line-key" style="--c: var(--series-2)"></span>RuneScape 3</li>
+        </ul>
+      </div>
+      <div class="chart chart-short" id="steam-chart">
+        <div class="tooltip" id="steam-tooltip" hidden></div>
+      </div>
+    </section>
+
+    <section class="split">
+      <div class="card">
+        <h2>Old School by region</h2>
+        <p class="muted">Players on worlds hosted in each region, right now</p>
+        <div id="regions" class="bars"></div>
+      </div>
+      <div class="card">
+        <h2>Old School by world type</h2>
+        <p class="muted">Members vs free-to-play, right now</p>
+        <div id="types" class="bars"></div>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="card-head">
+        <div>
+          <h2>Old School worlds</h2>
+          <p class="muted" id="worlds-sub"></p>
+        </div>
+        <div class="world-filters">
+          <input type="search" id="world-search" placeholder="Search world or activity" aria-label="Search worlds">
+          <select id="world-type" aria-label="World type">
+            <option value="">All worlds</option>
+            <option value="members">Members</option>
+            <option value="f2p">Free-to-play</option>
+          </select>
+        </div>
+      </div>
+      <div class="table-scroll worlds-scroll">
+        <table id="worlds-table">
+          <thead>
+            <tr>
+              <th><button data-sort="world">World</button></th>
+              <th class="num"><button data-sort="players">Players</button></th>
+              <th><button data-sort="members">Type</button></th>
+              <th><button data-sort="region">Region</button></th>
+              <th><button data-sort="activity">Activity</button></th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+
+    <footer class="muted">
+      Data from Jagex's public endpoints: the combined count from runescape.com and the Old School world list.
+      RuneScape 3 is the combined count minus the Old School world total. Steam counts come from Steam's public player count API.
+    </footer>
+  </main>
+  <script src="app.js"></script>
+</body>
+</html>
